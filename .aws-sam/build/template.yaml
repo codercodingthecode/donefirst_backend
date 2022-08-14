@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'donefirstregistration
+
+  Sample SAM Template for donefirstregistration
+
+  '
+Globals:
+  Function:
+    Timeout: 5
+  HttpApi:
+    CorsConfiguration:
+      AllowOrigins:
+      - '*'
+      AllowHeaders:
+      - Content-Type
+      AllowMethods:
+      - GET
+      - POST
+Resources:
+  RegistrationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: RegistrationFunction
+      Handler: registration
+      Policies:
+      - AmazonDynamoDBFullAccess
+      Runtime: go1.x
+      Architectures:
+      - x86_64
+      Events:
+        GetRegistration:
+          Type: HttpApi
+          Properties:
+            Path: /registration/{id}
+            Method: GET
+        PostRegistration:
+          Type: HttpApi
+          Properties:
+            Path: /registration
+            Method: POST
+        GetRegistrationList:
+          Type: HttpApi
+          Properties:
+            Path: /registration/list
+            Method: GET
+      Environment:
+        Variables:
+          PARAM1: VALUE
+    Metadata:
+      SamResourceId: RegistrationFunction
+  RegistrationTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    Properties:
+      TableName: RegistrationTable
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST

@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  donefirstregistration
+  
+  Sample SAM Template for donefirstregistration
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 5
+  HttpApi:
+    CorsConfiguration:
+      AllowOrigins:
+        - "*"
+      AllowHeaders:
+        - Content-Type
+      AllowMethods:
+        - GET
+        - POST
+
+Resources:
+  RegistrationFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: registration/
+      Handler: registration
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Runtime: go1.x
+      Architectures:
+        - x86_64
+      Events:
+        GetRegistration:
+          Type: HttpApi # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /registration/{id}
+            Method: GET
+        PostRegistration:
+          Type: HttpApi # More info about API Event Source:
+          Properties:
+            Path: /registration
+            Method: POST
+        GetRegistrationList:
+          Type: HttpApi # More info about API Event Source:
+          Properties:
+            Path: /registration/list
+            Method: GET
+
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          PARAM1: VALUE
+
+  RegistrationTable:
+    Type: AWS::DynamoDB::Table # More info about DynamoDB Table Resource:
+    DeletionPolicy: Retain
+    Properties:
+      TableName: RegistrationTable
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
