@@ -60,14 +60,6 @@ If the previous command ran successfully you should now be able to hit the follo
 
 AWS Lambda Golang runtime requires a flat folder with the executable generated on build step. SAM will use `CodeUri` property to know where to look up for the application:
 
-```yaml
-...
-    FirstFunction:
-        Type: AWS::Serverless::Function
-        Properties:
-            CodeUri: hello_world/
-            ...
-```
 
 To deploy your application for the first time, run the following in your shell:
 
